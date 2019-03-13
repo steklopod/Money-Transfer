@@ -25,13 +25,18 @@ dependencies {
     implementation("com.zaxxer:HikariCP:3.3.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.0")
+    testRuntimeOnly( "org.junit.jupiter:junit-jupiter-engine:5.4.0")
 }
 
 
 tasks {
     withType<KotlinCompile> { kotlinOptions { jvmTarget = "1.8" } }
 
+    getByName<Test>("test") { useJUnitPlatform { includeEngines("junit-jupiter"); excludeEngines("junit-vintage") } }
+
     withType<ShadowJar> { manifest { attributes(mapOf("Main-Class" to "ru.steklopod.Main")) } }
-    
+
     build { dependsOn(shadowJar) }
+
+
 }
