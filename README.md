@@ -1,11 +1,22 @@
 # Money Transfer REST API
 
-Technologies used: `Kotlin`, `Gradle`, `SparkJava`, `H2 Database`, `Exposed`, `JUnit`.  
+*Technologies*: `Kotlin`, `Gradle`, `SparkJava`, `H2 Database`, `Exposed`, `JUnit`.  
 
+### Requirements:
+
+1. You can use Java, Scala or `Kotlin`;
+2. Keep it simple and to the point (_e.g. no need to implement any authentication_);
+3. Assume the API is invoked by multiple systems and services on behalf of end users;
+4. You can use frameworks/libraries if you like (_except Spring_), but don't forget about
+requirement #2 – keep it simple and avoid heavy frameworks;
+5. The datastore should run in-memory for the sake of this test;
+6. The final result should be executable as a _standalone program_ (should not require
+a pre-installed container/server);
+7. Demonstrate with tests that the API works as expected.
 
 ## Run:
 
-    gradle build
+    ./gradlew build
     java -jar build/libs/MoneyTransfer-all.jar
 
 
@@ -43,5 +54,5 @@ Technologies used: `Kotlin`, `Gradle`, `SparkJava`, `H2 Database`, `Exposed`, `J
       
 ## Testing:
 
-    gradle test
+    ./gradlew test
 
