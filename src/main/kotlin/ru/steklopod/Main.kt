@@ -10,36 +10,15 @@ import ru.steklopod.service.TransferService
 import spark.Spark.*
 
 class Main {
-
     companion object {
 
         @JvmStatic
         fun main(args: Array<String>) {
-
-            DatabaseFactory.init()
             val gson = Gson()
             val accountService = TransferService()
-
-            exception(Exception::class.java) { e, _, response ->
-                val message = e.localizedMessage
-                println(message)
-                response.status(500)
-                response.body(gson.toJson(message))
-            }
-
-            exception(ApiException::class.java) { e, _, response ->
-                val message = e.message
-                println(message)
-                response.status(e.httpStatus)
-                response.body(gson.toJson(message))
-            }
-
-            notFound { _, response ->
-                response.status(404)
-                "{\"message\":\" Oops. The route has not been found :-( \"}"
-            }
-
-            after("/*") { _, res -> res.type("application/json") } // Always set JSON as the response type
+            DatabaseFactory.init()
+            addExceptionHandler(gson)
+            addApiConfig()
 
             post("/transfer") { req, res ->
                 val from = req.queryParams("fromId").toInt()
@@ -54,7 +33,6 @@ class Main {
             }
 
             path("/accounts") {
-
                 get("") { _, _ ->
                     runBlocking {
                         gson.toJson(accountService.getAllCustomers())
@@ -86,9 +64,33 @@ class Main {
                 }
 
             }
+        }
 
+        private fun addApiConfig() {
+            notFound { _, response ->
+                response.status(404)
+                "{\"message\":\" Oops. The route has not been found :-( \"}"
+            }
 
+            after("/*") { _, res -> res.type("application/json") } // Always set JSON as the response type
+        }
+
+        private fun addExceptionHandler(gson: Gson) {
+            exception(Exception::class.java) { e, _, response ->
+                val message = e.localizedMessage
+                println(message)
+                response.status(500)
+                response.body(gson.toJson(message))
+            }
+
+            exception(ApiException::class.java) { e, _, response ->
+                val message = e.message
+                println(message)
+                response.status(e.httpStatus)
+                response.body(gson.toJson(message))
+            }
         }
 
     }
+
 }

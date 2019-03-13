@@ -1,8 +1,9 @@
 package ru.steklopod.service
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import ru.steklopod.config.DatabaseFactory.dbQuery
 import ru.steklopod.model.*
 
 class TransferService {
@@ -64,4 +65,8 @@ class TransferService {
 
     private fun ResultRow.toCustomer() = Customer(this[Customers.id], this[Customers.money])
 
+    suspend fun <T> dbQuery(block: () -> T): T =
+        withContext(Dispatchers.IO) {
+            transaction { block() }
+        }
 }

@@ -13,7 +13,7 @@ import ru.steklopod.model.Transfer
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CustomerServiceTest {
 
-    private val accountService = TransferService()
+    private val transferService = TransferService()
 
     @BeforeAll
     fun init() {
@@ -22,23 +22,23 @@ class CustomerServiceTest {
 
     @Test
     fun `add account`() = runBlocking {
-        val saved = accountService.addCustomer(100.0)
-        val retrieved = accountService.getCustomer(saved.id)
+        val saved = transferService.addCustomer(100.0)
+        val retrieved = transferService.getCustomer(saved.id)
 
         assertEquals(retrieved, saved)
     }
 
     @Test
     fun transfer() = runBlocking {
-        val from = accountService.addCustomer(100.0)
-        val to = accountService.addCustomer(100.0)
+        val from = transferService.addCustomer(100.0)
+        val to = transferService.addCustomer(100.0)
 
         val transfer = Transfer(from.id, to.id, 90.0)
 
-        accountService.sendMoney(transfer)
+        transferService.sendMoney(transfer)
 
-        val fromAcount = accountService.getCustomer(from.id)
-        val toAccount = accountService.getCustomer(to.id)
+        val fromAcount = transferService.getCustomer(from.id)
+        val toAccount = transferService.getCustomer(to.id)
 
         assertEquals(fromAcount?.money, 10.0)
         assertEquals(toAccount?.money, 190.0)
@@ -46,13 +46,13 @@ class CustomerServiceTest {
 
     @Test
     fun `transfer not enough money`() = runBlocking {
-        val from = accountService.addCustomer(100.0)
-        val to = accountService.addCustomer(100.0)
+        val from = transferService.addCustomer(100.0)
+        val to = transferService.addCustomer(100.0)
 
         val transfer = Transfer(from.id, to.id, 200.0)
 
         try {
-            accountService.sendMoney(transfer)
+            transferService.sendMoney(transfer)
         }
         catch (exception: InsufficientBalanceException) {
             assertEquals(exception.message, "Insufficient balance")
